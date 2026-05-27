@@ -1,0 +1,41 @@
+version: "3.8"
+services:
+  jellyfin:
+    image: jellyfin/jellyfin:latest
+    container_name: jellyfin
+    restart: unless-stopped
+    expose:
+      - "8096"
+    volumes:
+      - ${MUSIC_PATH}:/media/music:ro
+      - ${DATA_DIR}/jellyfin/config:/config
+      - ${DATA_DIR}/jellyfin/cache:/cache
+
+  navidrome:
+    image: deluan/navidrome:latest
+    container_name: navidrome
+    restart: unless-stopped
+    environment:
+      - ND_LOGLEVEL=info
+      - ND_SCANINTERVAL=1m
+    expose:
+      - "4533"
+    volumes:
+      - ${MUSIC_PATH}:/data/music:ro
+      - ${DATA_DIR}/navidrome/data:/data/db
+
+  caddy:
+    image: caddy:2
+    container_name: caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      - ACME_AGREE=true
+      - EMAIL=${YOUR_EMAIL}
+    volumes:
+      - ${DATA_DIR}/caddy:/etc/caddy:ro
+      - ${DATA_DIR}/caddy/Caddyfile
+      - ${DATA_DIR}/caddy/data:/data
+      - ${DATA_DIR}/caddy/config:/config

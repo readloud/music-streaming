@@ -1,0 +1,20 @@
+[Unit]
+Description=Rclone mount for Google Drive Music
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=notify
+User=youruser
+Group=youruser
+ExecStart=/usr/bin/rclone mount gdrive:Music /mnt/music/gdrive \
+  --config=/home/youruser/.config/rclone/rclone.conf \
+  --vfs-cache-mode writes \
+  --allow-other \
+  --read-only
+ExecStop=/bin/fusermount -uz /mnt/music/gdrive
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

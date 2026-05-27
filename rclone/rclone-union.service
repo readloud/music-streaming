@@ -1,0 +1,23 @@
+[Unit]
+Description=Rclone union mount for merged cloud music
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=notify
+User=svn
+Group=svn
+Environment=RCLONE_CONFIG=/home/svn/.config/rclone/rclone.conf
+ExecStart=/usr/bin/rclone mount cloudmusic: /home/svn/music-server/mount \
+  --config=/home/svn/.config/rclone/rclone.conf \
+  --vfs-cache-mode writes \
+  --vfs-read-chunk-size 64M \
+  --vfs-read-chunk-size-limit 1G \
+  --allow-other \
+  --read-only
+ExecStop=/bin/fusermount -uz /home/svn/music-server/mount
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

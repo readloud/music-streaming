@@ -1,0 +1,17 @@
+music.example.com {
+  reverse_proxy /navidrome* navidrome:4533
+  reverse_proxy /navidrome navidrome:4533
+  reverse_proxy /navidrome/* navidrome:4533
+  reverse_proxy /navidrome{uri} navidrome:4533
+  reverse_proxy / jelyfin_backend
+}
+jellyfin.example.com {
+  reverse_proxy jellyfin:8096
+  tls ${YOUR_EMAIL}
+  encode gzip
+}
+navidrome.example.com {
+  reverse_proxy navidrome:4533
+  tls ${YOUR_EMAIL}
+  encode gzip
+}
