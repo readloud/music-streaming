@@ -162,13 +162,13 @@ services:
       - /srv/music-server/navidrome/data:/data/db
 ```
 
-# Notes
-# - Replace /srv/music and /srv/music-server with your host paths (Windows example: D:/music and C:/music-server).
-# - This compose exposes Jellyfin on http://HOST:8096 and Navidrome on http://HOST:4533 for LAN access only.
-# - Do not forward ports 80/443 on your router for LAN-only setup.
+Notes
+ - Replace /srv/music and /srv/music-server with your host paths (Windows example: D:/music and C:/music-server).
+ - This compose exposes Jellyfin on http://HOST:8096 and Navidrome on http://HOST:4533 for LAN access only.
+ - Do not forward ports 80/443 on your router for LAN-only setup.
 
 
-## Mounting Cloudstore (Google Drive, OneDrive, and Yandex.Disk)
+### Mounting Cloudstore (Google Drive, OneDrive, and Yandex.Disk)
 
 Linux — steps (rclone)
 1) Install rclone:
@@ -218,8 +218,8 @@ Windows — steps (rclone + WinFsp)
   - nssm install rclone-gdrive "C:\path\to\rclone.exe" mount gdrive:Music D:\mounted\gdrive --vfs-cache-mode writes --read-only
   - Configure service to run under your user account.
 
-Docker integration — point containers to mounts
-
+- Docker integration — point containers to mounts
+```
 - Update docker-compose volumes to use the mount paths:
   - Linux example:
     - volumes:
@@ -227,12 +227,17 @@ Docker integration — point containers to mounts
   - Windows example:
     - volumes:
       - D:\mounted\gdrive:C:\data\music:ro
-	  
+```
+  
 - For combined libraries, create a union mount or bind-mount multiple paths into containers and add multiple libraries in Jellyfin/Navidrome.
 
 - Create union remote: rclone config create cloudmusic union remote gdrive:Music remote onedrive:Music remote yandex:Music
 - Edit .env: set MUSIC_MERGE_MOUNT, DATA_DIR, HOST_USER, RCLONE_REMOTE (cloudmusic).
-- Create mount dir and set ownership: sudo mkdir -p $(grep MUSIC_MERGE_MOUNT .env | cut -d= -f2) && sudo chown youruser:youruser $(grep MUSIC_MERGE_MOUNT .env | cut -d= -f2)
+- Create mount dir and set ownership: 
+	
+	```
+	sudo mkdir -p $(grep MUSIC_MERGE_MOUNT .env | cut -d= -f2) && sudo chown youruser:youruser $(grep MUSIC_MERGE_MOUNT .env | cut -d= -f2)
+	```
 - Start systemd service or test mount manually:
   - Manual test: rclone mount cloudmusic: /mnt/music/union --vfs-cache-mode writes --read-only &
 - Start Docker: docker compose up -d
@@ -322,7 +327,7 @@ services:
 5) In Jellyfin add library path /media/music; in Navidrome set music dir /data/music.
 
 
-# troubleshoot
+### troubleshoot
 
 Fixes (pick one):
 
